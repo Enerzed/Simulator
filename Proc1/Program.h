@@ -36,6 +36,7 @@ public:
 			}
 			controls.process(window, clock);
 			window.clear(sf::Color(255, 255, 255));
+			//updateSpeed += time;
 			map.draw(window, clock);
 			ImGui::SFML::Render(window);
 			window.display();

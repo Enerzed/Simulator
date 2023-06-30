@@ -44,7 +44,7 @@ public:
 
 	void mutate()
 	{
-		if (random.generate(0, 4) == 0)
+		if (random.generate(0, 9) == 0)
 		{
 			int reaction;
 			int gen = random.generate(0, 4);
@@ -81,6 +81,7 @@ public:
 				break;
 			}
 			}
+			
 		}
 	}
 

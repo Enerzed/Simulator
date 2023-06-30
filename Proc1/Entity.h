@@ -9,30 +9,28 @@
 class Entity
 {
 protected:
-    std::vector<Entity> Objects;
+    sf::Color color;
 	std::string name;
-    sf::Texture texture;
-    sf::Sprite sprite;
     int posX;
     int posY;
-    bool isAlive;
-
 public:
     Entity()
     {
         name = "undefined";
+        posX = 0;
+        posY = 0;
+        bool isAlive = true;
+        color = sf::Color::White;
     }
 
-    Entity(sf::Image myImage, int myPosX, int myPosY, std::string myName)
+    Entity(int myPosX, int myPosY)
     {
-        texture.loadFromImage(myImage);
-        sprite.setTexture(texture);
-        name = myName;
+        name = "undefined";
         posX = myPosX;
         posY = myPosY;
+        bool isAlive = true;
+        color = sf::Color::White;
     }
-   
-    virtual void update(float time) = 0;
 
 	std::string getName()
 	{
@@ -44,13 +42,44 @@ public:
 		name = myName;
 	}
 
-    Entity& operator=(Entity& other)
+    int getPosX()
+    {
+        return posX;
+    }
+
+    int getPosY()
+    {
+        return posY;
+    }
+
+    void setPosX(int myPosX)
+    {
+        posX = myPosX;
+    }
+
+    void setPosY(int myPosY)
+    {
+        posY = myPosY;
+    }
+
+    sf::Color getColor()
+    {
+        return color;
+    }
+
+    void setColor(sf::Color myColor)
+    {
+        color = myColor;
+    }
+
+    Entity& operator=(const Entity& other)
     {
         if (this != &other)
         {
             name = other.name;
             posX = other.posX;
             posY = other.posY;
+            color = other.color;
         }
         return *this;
     }
@@ -60,6 +89,7 @@ public:
         name = other.name;
         posX = other.posX;
         posY = other.posY;
+        color = other.color;
     }
 };
 

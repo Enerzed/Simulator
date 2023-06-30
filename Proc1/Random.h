@@ -6,11 +6,8 @@ class Random
 public:
     std::random_device rd;
     
-    int min;
-    int max;
 
-    Random()
-    {
+    Random() {
 
     }
 
@@ -18,6 +15,7 @@ public:
     {
         std::mt19937 generate(rd());
         std::uniform_int_distribution<> distribute(min, max);
+        //std::cout << " RANDOM = " << i << std::endl;
         return distribute(generate);
     }
 };
