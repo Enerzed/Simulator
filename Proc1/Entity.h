@@ -9,27 +9,30 @@
 class Entity
 {
 protected:
+    Random random;
     sf::Color color;
 	std::string name;
     int posX;
     int posY;
+    int energy;
+    int rotation;
 public:
     Entity()
     {
+        rotation = 0;
         name = "undefined";
         posX = 0;
         posY = 0;
-        bool isAlive = true;
-        color = sf::Color::White;
+        color = random.generataRandomColor();
     }
 
     Entity(int myPosX, int myPosY)
     {
+        rotation = 0;
         name = "undefined";
         posX = myPosX;
         posY = myPosY;
-        bool isAlive = true;
-        color = sf::Color::White;
+        color = random.generataRandomColor();
     }
 
 	std::string getName()
@@ -72,6 +75,26 @@ public:
         color = myColor;
     }
 
+    int getEnergy()
+    {
+        return energy;
+    }
+
+    void setEnergy(int myEnergy)
+    {
+        energy = myEnergy;
+    }
+
+    int getRotation()
+    {
+        return rotation;
+    }
+
+    void setRotation(int myRotation)
+    {
+        rotation = myRotation;
+    }
+
     Entity& operator=(const Entity& other)
     {
         if (this != &other)
@@ -80,6 +103,7 @@ public:
             posX = other.posX;
             posY = other.posY;
             color = other.color;
+            rotation = other.rotation;
         }
         return *this;
     }
@@ -90,6 +114,7 @@ public:
         posX = other.posX;
         posY = other.posY;
         color = other.color;
+        rotation = other.rotation;
     }
 };
 

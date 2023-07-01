@@ -1,6 +1,6 @@
 #pragma once
-#define MAP_WIDTH 120
-#define MAP_HEIGHT 90
+#define MAP_WIDTH 40
+#define MAP_HEIGHT 40
 #include "Cell.h"
 #include "Wall.h"
 #include "Food.h"
@@ -12,6 +12,11 @@ class Map
 private:
 	int x = MAP_WIDTH;
 	int y = MAP_HEIGHT;
+	float localTime = 0;
+	int localFood = 0;
+	int localIteration = 0;
+	int maxIteration = 5;
+	int requiredEnergyForDevision = 100;
 	std::vector<Entity> map;
 	std::list<Cell*> cells;
 	sf::Image mapImage;
@@ -36,15 +41,9 @@ public:
 					map.push_back(undefined);
 				}
 			}
-		mapImage.loadFromFile("textures/mapTextures.png");
+		mapImage.loadFromFile("textures/textures.png");
 		mapTexture.loadFromImage(mapImage);
 		mapSprite.setTexture(mapTexture);
-
-		map.at(15 * MAP_WIDTH + 15).setName("cell");
-		cells.push_back(new Cell(15, 15));
-
-		map.at(20 * MAP_WIDTH + 20).setName("cell");
-		cells.push_back(new Cell(20, 20));
 	}
 
 	void generateFood(int maxFood)
@@ -56,10 +55,11 @@ public:
 			if (map.at(tempI * MAP_WIDTH + tempJ).getName() == "undefined")
 			{
 				map.at(tempI * MAP_WIDTH + tempJ).setName("food");
+				map.at(tempI * MAP_WIDTH + tempJ).setColor(sf::Color::Red);
 			}
 	}
 
-	void update()
+	void update(int iteration)
 	{
 		//Iterator for cells
 		auto i = cells.begin();
@@ -72,8 +72,7 @@ public:
 		{
 			if ((*i)->getEnergy() <= 0)
 			{
-				std::cout << "DELETED CELL\n";
-				map.at((*i)->getPosY() * MAP_WIDTH + (*i)->getPosX()).setName("food");
+				map.at((*i)->getPosY() * MAP_WIDTH + (*i)->getPosX()).setName("meat");
 				i = cells.erase(i);
 			}
 			else
@@ -87,28 +86,47 @@ public:
 			int seeY = (*i)->getSeeY();
 			std::string tempName = map.at(seeY * MAP_WIDTH + seeX).getName();
 			if (tempName == "undefined")
-				switch ((*i)->getGen().none)
+				switch ((*i)->getGen(iteration).none)
 				{
 				case 0:
 				{
 					(*i)->facingTurnRight();
+					map.at(posY * MAP_WIDTH + posX).setRotation((*i)->getFacing());
 					break;
 				}
 				case 1:
 				{
 					(*i)->facingTurnLeft();
+					map.at(posY * MAP_WIDTH + posX).setRotation((*i)->getFacing());
 					break;
 				}
 				case 5:
 				{
 					(*i)->go();
 					map.at(seeY * MAP_WIDTH + seeX).setName("cell");
-					if ((*i)->getEnergy() > 100)
+					map.at(seeY * MAP_WIDTH + seeX).setColor((*i)->getColor());
+					if ((*i)->getEnergy() > requiredEnergyForDevision && random.generate(0, 1) == 0)
 					{
-						std::cout << "CREATED\n";
 						map.at(posY * MAP_WIDTH + posX).setName("cell");
 						cells.push_back(new Cell(posX, posY));
-						cells.back()->getGen().mutate();
+						for (int k = 0; k < 5; k++)
+						{
+							cells.back()->setGen((*i)->getGen(k), k);
+						}
+						cells.back()->getGen(iteration).mutate();
+						if (!((*i)->getGen(iteration) == cells.back()->getGen(iteration)))
+						{
+							cells.back()->setColor(colors[random.generate(0, 5)]);
+							map.at(posY * MAP_WIDTH + posX).setColor(cells.back()->getColor());
+						}
+						else
+						{
+							cells.back()->setColor((*i)->getColor());
+							map.at(posY * MAP_WIDTH + posX).setColor(cells.back()->getColor());
+						}
+						(*i)->setEnergy((*i)->getEnergy() / 2);
+						cells.back()->setEnergy((*i)->getEnergy() / 2);
+						map.at(posY * MAP_WIDTH + posX).setRotation(cells.back()->getFacing());
 					}
 					else
 						map.at(posY * MAP_WIDTH + posX).setName("undefined");
@@ -117,71 +135,188 @@ public:
 				}
 				else if (tempName == "food")
 				{
-					switch ((*i)->getGen().food)
+					switch ((*i)->getGen(iteration).food)
 					{
 					case 0:
 					{
 						(*i)->facingTurnRight();
+						map.at(posY * MAP_WIDTH + posX).setRotation((*i)->getFacing());
 						break;
 					}
 					case 1:
 					{
 						(*i)->facingTurnLeft();
+						map.at(posY * MAP_WIDTH + posX).setRotation((*i)->getFacing());
 						break;
 					}
 					case 2:
 					{
 						map.at(seeY * MAP_WIDTH + seeX).setName("undefined");
-						(*i)->setEnergy((*i)->getEnergy() + 50);
+						(*i)->setEnergy((*i)->getEnergy() + 100);
+						break;
 					}
 					}
 				}
-				else if (tempName == "cell")
+				else if (tempName == "meat")
 				{
-					
-				}
-				else if (tempName == "wall")
-				{
-					switch ((*i)->getGen().wall)
+					switch ((*i)->getGen(iteration).meat)
 					{
 					case 0:
 					{
 						(*i)->facingTurnRight();
+						map.at(posY * MAP_WIDTH + posX).setRotation((*i)->getFacing());
 						break;
 					}
 					case 1:
 					{
 						(*i)->facingTurnLeft();
+						map.at(posY* MAP_WIDTH + posX).setRotation((*i)->getFacing());
+						break;
+					}
+					case 2:
+					{
+						map.at(seeY * MAP_WIDTH + seeX).setName("undefined");
+						(*i)->setEnergy((*i)->getEnergy() + 100);
+						break;
+					}
+					}
+				}
+				else if (tempName == "cell")
+				{
+					auto j = cells.begin();
+					for (; j != cells.end(); j++)
+						if ((*j)->getPosX() == seeX && (*j)->getPosY() == seeY)
+							break;
+					if ((*j)->getColor() == (*i)->getColor() && (*j)->getGen(iteration) == (*i)->getGen(iteration))
+						switch ((*i)->getGen(iteration).sameCell)
+						{
+						case 0:
+						{
+							(*i)->facingTurnRight();
+							map.at(posY * MAP_WIDTH + posX).setRotation((*i)->getFacing());
+							break;
+						}
+						case 1:
+						{
+							(*i)->facingTurnLeft();
+							map.at(posY* MAP_WIDTH + posX).setRotation((*i)->getFacing());
+							break;
+						}
+						case 3:
+						{
+							(*j)->setEnergy((*j)->getEnergy()-100);
+							break;
+						}
+						}
+					else
+						switch ((*i)->getGen(iteration).otherCell)
+						{
+						case 0:
+						{
+							(*i)->facingTurnRight();
+							map.at(posY* MAP_WIDTH + posX).setRotation((*i)->getFacing());
+							break;
+						}
+						case 1:
+						{
+							(*i)->facingTurnLeft();
+							map.at(posY* MAP_WIDTH + posX).setRotation((*i)->getFacing());
+							break;
+						}
+						case 3:
+						{
+							(*j)->setEnergy((*j)->getEnergy() - 100);
+							break;
+						}
+						}
+				}
+				else if (tempName == "wall")
+				{
+					switch ((*i)->getGen(iteration).wall)
+					{
+					case 0:
+					{
+						(*i)->facingTurnRight();
+						map.at(posY* MAP_WIDTH + posX).setRotation((*i)->getFacing());
+						break;
+					}
+					case 1:
+					{
+						(*i)->facingTurnLeft();
+						map.at(posY* MAP_WIDTH + posX).setRotation((*i)->getFacing());
 						break;
 					}
 					}
 				}
 		}
 	}
-	void draw(sf::RenderWindow& window, sf::Clock clock)
+	void draw(sf::RenderWindow& window, float speed, sf::Clock time, int foodCounter, bool pause)
 	{
-		generateFood(1);
-		update();
+		if (!pause)
+		{
+			localTime += time.getElapsedTime().asMicroseconds();
+			if (localTime * speed > 1000)
+			{
+				if (localFood > 5)
+				{
+					generateFood(1);
+					localFood = 0;
+				}
+				localFood += foodCounter;
+				update(localIteration);
+				if (localIteration >= maxIteration)
+					localIteration = 0;
+				else
+					localIteration++;
+				localTime = 0;
+			}
+		}
 		//Drawing sprites
 		for (int i = 0; i < MAP_HEIGHT; i++)
 			for (int j = 0; j < MAP_WIDTH; j++)
 			{
 				if ((map.at(i * MAP_WIDTH + j)).getName() == "undefined")
-					mapSprite.setTextureRect(sf::IntRect(0, 0, 8, 8));
+					mapSprite.setTextureRect(sf::IntRect(0, 0, 16, 16));
 				else if ((map.at(i * MAP_WIDTH + j)).getName() == "wall")
-					mapSprite.setTextureRect(sf::IntRect(8, 0, 8, 8));
+					mapSprite.setTextureRect(sf::IntRect(176, 0, 16, 16));
 				else if ((map.at(i * MAP_WIDTH + j)).getName() == "food")
-					mapSprite.setTextureRect(sf::IntRect(16, 0, 8, 8));
+					mapSprite.setTextureRect(sf::IntRect(144, 0, 16, 16));
+				else if ((map.at(i * MAP_WIDTH + j)).getName() == "meat")
+					mapSprite.setTextureRect(sf::IntRect(160, 0, 16, 16));
 				else if ((map.at(i * MAP_WIDTH + j)).getName() == "cell")
 				{
-					mapSprite.setTextureRect(sf::IntRect(24, 0, 8, 8));
+					switch ((map.at(i * MAP_WIDTH + j)).getRotation())
+					{
+					case 1: {mapSprite.setTextureRect(sf::IntRect(16, 0, 16, 16)); break; }
+					case 2: {mapSprite.setTextureRect(sf::IntRect(32, 0, 16, 16)); break; }
+					case 3: {mapSprite.setTextureRect(sf::IntRect(48, 0, 16, 16)); break; }
+					case 4: {mapSprite.setTextureRect(sf::IntRect(64, 0, 16, 16)); break; }
+					case 5: {mapSprite.setTextureRect(sf::IntRect(80, 0, 16, 16)); break; }
+					case 6: {mapSprite.setTextureRect(sf::IntRect(96, 0, 16, 16)); break; }
+					case 7: {mapSprite.setTextureRect(sf::IntRect(112, 0, 16, 16)); break; }
+					case 8: {mapSprite.setTextureRect(sf::IntRect(128, 0, 16, 16)); break; }
+					}
 					mapSprite.setColor((map.at(i * MAP_WIDTH + j)).getColor());
 				}
-				mapSprite.setPosition(j * 8, i * 8);
+
+				mapSprite.setPosition(j * 16, i * 16);
 				window.draw(mapSprite);
 				mapSprite.setColor(sf::Color::White);
 			}
 	}
+
+	void spawnCell(int posX, int posY)
+	{
+		if (posX < MAP_WIDTH && posY < MAP_HEIGHT)
+			if (map.at(posY * MAP_WIDTH + posX).getName() == "undefined")
+			{
+				cells.push_back(new Cell(posX, posY));
+				map.at(posY * MAP_WIDTH + posX).setName("cell");
+				map.at(posY * MAP_WIDTH + posX).setColor(cells.back()->getColor());
+				map.at(posY * MAP_WIDTH + posX).setRotation(cells.back()->getFacing());
+			}
+	}
+
 	int getX()
 	{
 		return x;
@@ -189,6 +324,20 @@ public:
 	int getY()
 	{
 		return y;
+	}
+
+	int getNumberOfCells()
+	{
+		return cells.size();
+	}
+
+	void setMaxIteration(int myMaxIteration)
+	{
+		maxIteration = myMaxIteration;
+	}
+	void setRequiredEnergyForDevision(int myRequiredEnergyForDevision)
+	{
+		requiredEnergyForDevision = myRequiredEnergyForDevision;
 	}
 };
 

@@ -15,6 +15,7 @@ public:
 	int otherCell;
 	int food;
 	int wall;
+	int meat;
 	Random random;
 
 	Gen()
@@ -38,16 +39,20 @@ public:
 		food = reaction;
 
 		do reaction = random.generate(0, 5);
+		while (reaction == 3 || reaction == 5);
+		meat = reaction;
+
+		do reaction = random.generate(0, 5);
 		while (reaction == 2 || reaction == 3 || reaction == 5);
 		wall = reaction;
 	}
 
 	void mutate()
 	{
-		if (random.generate(0, 9) == 0)
+		if (random.generate(0, 19) == 0)
 		{
 			int reaction;
-			int gen = random.generate(0, 4);
+			int gen = random.generate(0, 5);
 			switch (gen)
 			{
 			case 0: {
@@ -80,6 +85,12 @@ public:
 				wall = reaction;
 				break;
 			}
+			case 5: {
+				do reaction = random.generate(0, 5);
+				while (reaction == 3 || reaction == 5);
+				meat = reaction;
+				break;
+			}
 			}
 			
 		}
@@ -92,6 +103,7 @@ public:
 		otherCell = other.otherCell;
 		food = other.food;
 		wall = other.wall;;
+		meat = other.meat;
 	}
 
 	Gen& operator=(const Gen& other)
@@ -103,13 +115,14 @@ public:
 			otherCell = other.otherCell;
 			food = other.food;
 			wall = other.wall;
+			meat = other.meat;
 		}
 		return *this;
 	}
 
 	bool operator == (const Gen& g)
 	{
-		if (none == g.none && sameCell == g.sameCell && otherCell == g.otherCell && food == g.food && wall == g.wall)
+		if (none == g.none && sameCell == g.sameCell && otherCell == g.otherCell && food == g.food && wall == g.wall && meat == g.meat)
 			return true;
 		return false;
 	}

@@ -4,21 +4,21 @@ class Cell :
     public Entity
 {
 private:
-	int energy;
 	int facing;
 	int seeX, seeY;
-	Gen gen;
+	Gen gen[5];
 	Random random;
 public:
 	Cell(int myPosX, int myPosY)
     {
-		energy = 200;
+		energy = 500;
         name = "cell";
         posX = myPosX;
         posY = myPosY;
 		facing = random.generate(1, 8);
+		rotation = facing;
 		updateSee();
-		color = sf::Color::Green;
+		color = random.generataRandomColor();
     }
 
 	void updateSee()
@@ -76,41 +76,43 @@ public:
 		}
 	}
 
-	Gen& getGen()
+	Gen& getGen(int i)
 	{
-		return gen;
+		return gen[i];
 	}
 
-	void setGen(Gen myGen)
+	void setGen(Gen myGen, int i)
 	{
-		gen = myGen;
-	}
-
-	int getEnergy()
-	{
-		return energy;
-	}
-
-	void setEnergy(int myEnergy)
-	{
-		energy = myEnergy;
+		gen[i] = myGen;
 	}
 
 	void facingTurnRight()
 	{
 		if (facing == 8)
+		{
 			facing = 1;
+			rotation = 1;
+		}
 		else
+		{
 			facing++;
+			rotation++;
+		}
 		updateSee();
 	}
 
 	void facingTurnLeft()
 	{
 		if (facing == 1)
+		{
 			facing = 8;
+			rotation = 8;
+		}
 		else
+		{
 			facing--;
+			rotation--;
+		}
 		updateSee();
 	}
 
@@ -205,6 +207,7 @@ public:
 		facing = other.facing;
 		energy = other.energy;
 		color = other.color;
+		rotation = other.rotation;
 	}
 
 	Cell& operator=(const Cell& other)
@@ -219,6 +222,7 @@ public:
 			facing = other.facing;
 			energy = other.energy;
 			color = other.color;
+			rotation = other.rotation;
 		}
 		return *this;
 	}
