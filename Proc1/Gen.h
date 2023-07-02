@@ -120,6 +120,96 @@ public:
 		return *this;
 	}
 
+	std::string getStringReactionNone()
+	{
+		std::string returnReaction;
+		switch (none)
+		{
+		case 0: returnReaction = "Turn Right "; break;
+		case 1: returnReaction = "Turn Left  "; break;
+		case 2: returnReaction = "Eat        "; break;
+		case 3: returnReaction = "Kill       "; break;
+		case 4: returnReaction = "Hold       "; break;
+		case 5: returnReaction = "Move       "; break;
+		}
+		return returnReaction;
+	}
+
+	std::string getStringReactionSameCell()
+	{
+		std::string returnReaction;
+		switch (sameCell)
+		{
+		case 0: returnReaction = "Turn Right "; break;
+		case 1: returnReaction = "Turn Left  "; break;
+		case 2: returnReaction = "Eat        "; break;
+		case 3: returnReaction = "Kill       "; break;
+		case 4: returnReaction = "Hold       "; break;
+		case 5: returnReaction = "Move       "; break;
+		}
+		return returnReaction;
+	}
+
+	std::string getStringReactionOtherCell()
+	{
+		std::string returnReaction;
+		switch (otherCell)
+		{
+		case 0: returnReaction = "Turn Right "; break;
+		case 1: returnReaction = "Turn Left  "; break;
+		case 2: returnReaction = "Eat        "; break;
+		case 3: returnReaction = "Kill       "; break;
+		case 4: returnReaction = "Hold       "; break;
+		case 5: returnReaction = "Move       "; break;
+		}
+		return returnReaction;
+	}
+
+	std::string getStringReactionFood()
+	{
+		std::string returnReaction;
+		switch (food)
+		{
+		case 0: returnReaction = "Turn Right "; break;
+		case 1: returnReaction = "Turn Left  "; break;
+		case 2: returnReaction = "Eat        "; break;
+		case 3: returnReaction = "Kill       "; break;
+		case 4: returnReaction = "Hold       "; break;
+		case 5: returnReaction = "Move       "; break;
+		}
+		return returnReaction;
+	}
+
+	std::string getStringReactionWall()
+	{
+		std::string returnReaction;
+		switch (wall)
+		{
+		case 0: returnReaction = "Turn Right "; break;
+		case 1: returnReaction = "Turn Left  "; break;
+		case 2: returnReaction = "Eat        "; break;
+		case 3: returnReaction = "Kill       "; break;
+		case 4: returnReaction = "Hold       "; break;
+		case 5: returnReaction = "Move       "; break;
+		}
+		return returnReaction;
+	}
+
+	std::string getStringReactionMeat()
+	{
+		std::string returnReaction;
+		switch (meat)
+		{
+		case 0: returnReaction = "Turn Right "; break;
+		case 1: returnReaction = "Turn Left  "; break;
+		case 2: returnReaction = "Eat        "; break;
+		case 3: returnReaction = "Kill       "; break;
+		case 4: returnReaction = "Hold       "; break;
+		case 5: returnReaction = "Move       "; break;
+		}
+		return returnReaction;
+	}
+
 	bool operator == (const Gen& g)
 	{
 		if (none == g.none && sameCell == g.sameCell && otherCell == g.otherCell && food == g.food && wall == g.wall && meat == g.meat)

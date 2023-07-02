@@ -10,6 +10,7 @@ private:
 	int genSlider;
 	int foodSlider;
 	int speedSlider;
+	int photosSlider;
 	int requiredEnergyForDevision;
 public:
 	Controls()
@@ -18,6 +19,7 @@ public:
 		genSlider = 1;
 		foodSlider = 1;
 		speedSlider = 1;
+		photosSlider = 1;
 		requiredEnergyForDevision = 100;
 	}
 	void init(sf::RenderWindow& window)
@@ -32,12 +34,14 @@ public:
 		ImGui::SliderInt("Game speed", &speedSlider, 1, 10);
 		ImGui::SliderInt("Gen counter", &genSlider, 1, 5);
 		ImGui::SliderInt("Food counter", &foodSlider, 1, 10);
-		ImGui::SliderInt("Required energy for devision", &requiredEnergyForDevision, 100, 500);
+		ImGui::SliderInt("Photosynthesis counter", &photosSlider, 1, 10);
+		ImGui::SliderInt("Energy for devision", &requiredEnergyForDevision, 100, 500);
+
 		ImGui::Text("");
 
 		ImGui::Text("1. Left click on the grid makes random Cell");
+		ImGui::Text("2. Right click on the Cell gives you information about cell");
 		ImGui::Text("2. Mutation chance is 5 percents");
-		ImGui::Text("3. Devision possible from 250 energy");
 		ImGui::Text("4. Devision chance is 50 percents");
 
 		ImGui::Text("");
@@ -60,6 +64,10 @@ public:
 	int getSpeedSlider()
 	{
 		return speedSlider;
+	}
+	int getPhotosSlider()
+	{
+		return photosSlider;
 	}
 	int getRequiredEnergyForDevision()
 	{

@@ -17,6 +17,7 @@ private:
 	int localIteration = 0;
 	int maxIteration = 5;
 	int requiredEnergyForDevision = 100;
+	int energyPerPhotos = 1;
 	std::vector<Entity> map;
 	std::list<Cell*> cells;
 	sf::Image mapImage;
@@ -66,7 +67,7 @@ public:
 		
 		//Decreasing energy by 1 (time)
 		for (i = cells.begin(); i != cells.end(); i++)
-			(*i)->setEnergy((*i)->getEnergy() - 1);
+			(*i)->setEnergy((*i)->getEnergy() - 2);
 		//Deleting dead cells from list
 		for (i = cells.begin(); i != cells.end();)
 		{
@@ -99,6 +100,11 @@ public:
 					(*i)->facingTurnLeft();
 					map.at(posY * MAP_WIDTH + posX).setRotation((*i)->getFacing());
 					break;
+				}
+				case 4:
+				{
+					if ((*i)->getGen(iteration).sameCell != 3 && (*i)->getGen(iteration).otherCell != 3)
+						(*i)->setEnergy((*i)->getEnergy() + energyPerPhotos);
 				}
 				case 5:
 				{
@@ -155,6 +161,11 @@ public:
 						(*i)->setEnergy((*i)->getEnergy() + 100);
 						break;
 					}
+					case 4:
+					{
+						if ((*i)->getGen(iteration).sameCell != 3 && (*i)->getGen(iteration).otherCell != 3)
+							(*i)->setEnergy((*i)->getEnergy() + energyPerPhotos);
+					}
 					}
 				}
 				else if (tempName == "meat")
@@ -178,6 +189,11 @@ public:
 						map.at(seeY * MAP_WIDTH + seeX).setName("undefined");
 						(*i)->setEnergy((*i)->getEnergy() + 100);
 						break;
+					}
+					case 4:
+					{
+						if ((*i)->getGen(iteration).sameCell != 3 && (*i)->getGen(iteration).otherCell != 3)
+							(*i)->setEnergy((*i)->getEnergy() + energyPerPhotos);
 					}
 					}
 				}
@@ -207,6 +223,11 @@ public:
 							(*j)->setEnergy((*j)->getEnergy()-100);
 							break;
 						}
+						case 4:
+						{
+							if ((*i)->getGen(iteration).sameCell != 3 && (*i)->getGen(iteration).otherCell != 3)
+								(*i)->setEnergy((*i)->getEnergy() + energyPerPhotos);
+						}
 						}
 					else
 						switch ((*i)->getGen(iteration).otherCell)
@@ -228,6 +249,11 @@ public:
 							(*j)->setEnergy((*j)->getEnergy() - 100);
 							break;
 						}
+						case 4:
+						{
+							if ((*i)->getGen(iteration).sameCell != 3 && (*i)->getGen(iteration).otherCell != 3)
+								(*i)->setEnergy((*i)->getEnergy() + energyPerPhotos);
+						}
 						}
 				}
 				else if (tempName == "wall")
@@ -246,6 +272,11 @@ public:
 						map.at(posY* MAP_WIDTH + posX).setRotation((*i)->getFacing());
 						break;
 					}
+					case 4:
+					{
+						if ((*i)->getGen(iteration).sameCell != 3 && (*i)->getGen(iteration).otherCell != 3)
+							(*i)->setEnergy((*i)->getEnergy() + energyPerPhotos);
+					}
 					}
 				}
 		}
@@ -255,7 +286,7 @@ public:
 		if (!pause)
 		{
 			localTime += time.getElapsedTime().asMicroseconds();
-			if (localTime * speed > 1000)
+			if (localTime * speed > 1500)
 			{
 				if (localFood > 5)
 				{
@@ -326,9 +357,44 @@ public:
 		return y;
 	}
 
-	int getNumberOfCells()
+	std::string getNumberOfCells()
 	{
-		return cells.size();
+		return std::to_string(cells.size());
+	}
+
+	std::string getCellInfo(int posX, int posY)
+	{
+		std::string info = "";
+		for (auto i = cells.begin(); i != cells.end(); i++)
+			if ((*i)->getPosX() == posX && (*i)->getPosY() == posY)
+			{
+				info += "COLOR: ";
+				if ((*i)->getColor() == sf::Color::Red)
+					info += "Red\n";
+				else if ((*i)->getColor() == sf::Color::Green)
+					info  += "Green\n";
+				else if ((*i)->getColor() == sf::Color::Blue)
+					info += "Blue\n";
+				else if ((*i)->getColor() == sf::Color::Magenta)
+					info += "Magenta\n";
+				else if ((*i)->getColor() == sf::Color::Cyan)
+					info += "Cyan\n";
+				else if ((*i)->getColor() == sf::Color::Yellow)
+					info += "Yellow\n";
+				else
+					info += "White\n";
+				info += ("NONE:       SAME CELL:  OTHER CELL: DEAD CELL:   MEAT:       WALL:\n\n");
+				for (int j = 0; j < maxIteration; j++)
+				{
+					info += ((*i)->getGen(j).getStringReactionNone() + " ");
+					info += ((*i)->getGen(j).getStringReactionSameCell() + " ");
+					info += ((*i)->getGen(j).getStringReactionOtherCell() + " ");
+					info += ((*i)->getGen(j).getStringReactionFood() + " ");
+					info += ((*i)->getGen(j).getStringReactionMeat() + " ");
+					info += ((*i)->getGen(j).getStringReactionWall() + "\n");
+				}
+			}
+		return(info);
 	}
 
 	void setMaxIteration(int myMaxIteration)
@@ -338,6 +404,10 @@ public:
 	void setRequiredEnergyForDevision(int myRequiredEnergyForDevision)
 	{
 		requiredEnergyForDevision = myRequiredEnergyForDevision;
+	}
+	void setEnergyPerPhotos(int myEnergyPerPhotos)
+	{
+		energyPerPhotos = myEnergyPerPhotos;
 	}
 };
 

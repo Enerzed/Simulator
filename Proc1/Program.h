@@ -2,6 +2,7 @@
 #include <random>
 #include "Controls.h"
 #include "Map.h"
+#include <sstream>
 
 
 class Program
@@ -9,21 +10,27 @@ class Program
 private:
 	sf::Clock clock;
 	sf::Time mainStart;
+	sf::Font font;
 	Map map;
 	Controls controls;
 	int speed = 1;
 	int x;
 	int y;
+	bool clickedCell = false;
+	Cell displayCell;
 public:
 	Program()
 	{
-		
+
 	}
 
 	void run()
 	{
+		font.loadFromFile("Consolas.ttf");
+		sf::Text numberOfCells("", font, 14);
+		sf::Text cellInfo("", font, 14);
 		sf::Vector2i position = sf::Mouse::getPosition();
-		sf::RenderWindow window(sf::VideoMode(1024, 640), "Simulator");
+		sf::RenderWindow window(sf::VideoMode(1240, 640), "Simulator");
 		controls.init(window);
 		float time = clock.getElapsedTime().asMicroseconds();
 		clock.restart();
@@ -40,9 +47,13 @@ public:
 				ImGui::SFML::ProcessEvent(event);
 				if (event.type == sf::Event::Closed)
 					window.close();
-				if (event.type == sf::Event::MouseButtonPressed)
+				if (event.type == sf::Event::MouseButtonPressed && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
 					map.spawnCell(int(x / 16), int(y / 16));
+				}
+				if (event.type == sf::Event::MouseButtonPressed && sf::Mouse::isButtonPressed(sf::Mouse::Right))
+				{
+					cellInfo.setString(map.getCellInfo(x / 16, y / 16));
 				}
 				if (event.type == sf::Event::MouseMoved)
 				{
@@ -53,7 +64,14 @@ public:
 			controls.process(window, clock);
 			map.setMaxIteration(controls.getGenSlider());
 			map.setRequiredEnergyForDevision(controls.getRequiredEnergyForDevision());
-			window.clear(sf::Color(255, 255, 255));
+			map.setEnergyPerPhotos(controls.getPhotosSlider());
+			numberOfCells.setString("Number of Cells: " + map.getNumberOfCells());
+			numberOfCells.setPosition(660, 320);
+			cellInfo.setPosition(660, 400);
+
+			window.clear(sf::Color(0, 0, 0));
+			window.draw(numberOfCells);
+			window.draw(cellInfo);
 			map.draw(window, controls.getSpeedSlider(), clock, controls.getFoodSlider(), controls.getIsPause());
 			ImGui::SFML::Render(window);
 			window.display();

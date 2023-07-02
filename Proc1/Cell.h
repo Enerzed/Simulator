@@ -9,6 +9,16 @@ private:
 	Gen gen[5];
 	Random random;
 public:
+	Cell()
+	{
+		energy = 0;
+		name = "cell";
+		posX = 0;
+		posY = 0;
+		facing = 0;
+		rotation = 0;
+		color = sf::Color::White;
+	}
 	Cell(int myPosX, int myPosY)
     {
 		energy = 500;
