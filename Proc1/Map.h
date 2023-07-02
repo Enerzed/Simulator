@@ -18,6 +18,7 @@ private:
 	int maxIteration = 5;
 	int requiredEnergyForDevision = 100;
 	int energyPerPhotos = 1;
+	int decreaseEnergy = 1;
 	std::vector<Entity> map;
 	std::list<Cell*> cells;
 	sf::Image mapImage;
@@ -62,13 +63,10 @@ public:
 
 	void update(int iteration)
 	{
-		//Iterator for cells
 		auto i = cells.begin();
 		
-		//Decreasing energy by 1 (time)
 		for (i = cells.begin(); i != cells.end(); i++)
-			(*i)->setEnergy((*i)->getEnergy() - 2);
-		//Deleting dead cells from list
+			(*i)->setEnergy((*i)->getEnergy() - decreaseEnergy);
 		for (i = cells.begin(); i != cells.end();)
 		{
 			if ((*i)->getEnergy() <= 0)
@@ -383,7 +381,7 @@ public:
 					info += "Yellow\n";
 				else
 					info += "White\n";
-				info += ("NONE:       SAME CELL:  OTHER CELL: DEAD CELL:   MEAT:       WALL:\n\n");
+				info += ("NONE:       SAME CELL:  OTHER CELL: FOOD:       DEAD CELL:  WALL:\n\n");
 				for (int j = 0; j < maxIteration; j++)
 				{
 					info += ((*i)->getGen(j).getStringReactionNone() + " ");
@@ -408,6 +406,10 @@ public:
 	void setEnergyPerPhotos(int myEnergyPerPhotos)
 	{
 		energyPerPhotos = myEnergyPerPhotos;
+	}
+	void setDecreaseEnergy(int myDecreaseEnergy)
+	{
+		decreaseEnergy = myDecreaseEnergy;
 	}
 };
 

@@ -12,6 +12,7 @@ private:
 	int speedSlider;
 	int photosSlider;
 	int requiredEnergyForDevision;
+	int decreaseEnergy;
 public:
 	Controls()
 	{
@@ -20,6 +21,7 @@ public:
 		foodSlider = 1;
 		speedSlider = 1;
 		photosSlider = 1;
+		decreaseEnergy = 1;
 		requiredEnergyForDevision = 100;
 	}
 	void init(sf::RenderWindow& window)
@@ -35,6 +37,7 @@ public:
 		ImGui::SliderInt("Gen counter", &genSlider, 1, 5);
 		ImGui::SliderInt("Food counter", &foodSlider, 1, 10);
 		ImGui::SliderInt("Photosynthesis counter", &photosSlider, 1, 10);
+		ImGui::SliderInt("Decrease energy counter", &decreaseEnergy, 1, 10);
 		ImGui::SliderInt("Energy for devision", &requiredEnergyForDevision, 100, 500);
 
 		ImGui::Text("");
@@ -72,6 +75,10 @@ public:
 	int getRequiredEnergyForDevision()
 	{
 		return requiredEnergyForDevision; 
+	}
+	int getDecreaseEnergy()
+	{
+		return decreaseEnergy;
 	}
 };
 

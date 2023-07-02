@@ -65,8 +65,9 @@ public:
 			map.setMaxIteration(controls.getGenSlider());
 			map.setRequiredEnergyForDevision(controls.getRequiredEnergyForDevision());
 			map.setEnergyPerPhotos(controls.getPhotosSlider());
+			map.setDecreaseEnergy(controls.getDecreaseEnergy());
 			numberOfCells.setString("Number of Cells: " + map.getNumberOfCells());
-			numberOfCells.setPosition(660, 320);
+			numberOfCells.setPosition(660, 340);
 			cellInfo.setPosition(660, 400);
 
 			window.clear(sf::Color(0, 0, 0));
