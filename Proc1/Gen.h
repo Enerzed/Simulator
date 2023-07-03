@@ -52,47 +52,49 @@ public:
 		if (random.generate(0, 19) == 0)
 		{
 			int reaction;
-			int gen = random.generate(0, 5);
-			switch (gen)
+			for (int i = 0; i < random.generate(1, 6); i++)
 			{
-			case 0: {
-				do reaction = random.generate(0, 5);
-				while (reaction == 2 || reaction == 3);
-				none = reaction;
-				break;
+				int gen = random.generate(0, 5);
+				switch (gen)
+				{
+				case 0: {
+					do reaction = random.generate(0, 5);
+					while (reaction == 2 || reaction == 3);
+					none = reaction;
+					break;
+				}
+				case 1: {
+					do reaction = random.generate(0, 5);
+					while (reaction == 2 || reaction == 5);
+					sameCell = reaction;
+					break;
+				}
+				case 2: {
+					do reaction = random.generate(0, 5);
+					while (reaction == 2 || reaction == 5);
+					otherCell = reaction;
+					break;
+				}
+				case 3: {
+					do reaction = random.generate(0, 5);
+					while (reaction == 3 || reaction == 5);
+					food = reaction;
+					break;
+				}
+				case 4: {
+					do reaction = random.generate(0, 5);
+					while (reaction == 2 || reaction == 3 || reaction == 5);
+					wall = reaction;
+					break;
+				}
+				case 5: {
+					do reaction = random.generate(0, 5);
+					while (reaction == 3 || reaction == 5);
+					meat = reaction;
+					break;
+				}
+				}
 			}
-			case 1: {
-				do reaction = random.generate(0, 5);
-				while (reaction == 2 || reaction == 5);
-				sameCell = reaction;
-				break;
-			}
-			case 2: {
-				do reaction = random.generate(0, 5);
-				while (reaction == 2 || reaction == 5);
-				otherCell = reaction;
-				break;
-			}
-			case 3: {
-				do reaction = random.generate(0, 5);
-				while (reaction == 3 || reaction == 5);
-				food = reaction;
-				break;
-			}
-			case 4: {
-				do reaction = random.generate(0, 5);
-				while (reaction == 2 || reaction == 3 || reaction == 5);
-				wall = reaction;
-				break;
-			}
-			case 5: {
-				do reaction = random.generate(0, 5);
-				while (reaction == 3 || reaction == 5);
-				meat = reaction;
-				break;
-			}
-			}
-			
 		}
 	}
 

@@ -30,7 +30,7 @@ public:
 		sf::Text numberOfCells("", font, 14);
 		sf::Text cellInfo("", font, 14);
 		sf::Vector2i position = sf::Mouse::getPosition();
-		sf::RenderWindow window(sf::VideoMode(1240, 640), "Simulator");
+		sf::RenderWindow window(sf::VideoMode(1240, 640), "Simulator", sf::Style::Close);
 		controls.init(window);
 		float time = clock.getElapsedTime().asMicroseconds();
 		clock.restart();

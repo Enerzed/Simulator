@@ -43,7 +43,7 @@ public:
 		ImGui::Text("");
 
 		ImGui::Text("1. Left click on the grid makes random Cell");
-		ImGui::Text("2. Right click on the Cell gives you information about cell");
+		ImGui::Text("2. Right click on the Cell gives you the information about the Cell");
 		ImGui::Text("2. Mutation chance is 5 percents");
 		ImGui::Text("4. Devision chance is 50 percents");
 
