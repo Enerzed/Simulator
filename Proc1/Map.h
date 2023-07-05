@@ -2,8 +2,6 @@
 #define MAP_WIDTH 40
 #define MAP_HEIGHT 40
 #include "Cell.h"
-#include "Wall.h"
-#include "Food.h"
 #include <iterator>
 #include <iostream>
 
@@ -15,7 +13,7 @@ private:
 	float localTime = 0;
 	int localFood = 0;
 	int localIteration = 0;
-	int maxIteration = 5;
+	int maxIteration = 1;
 	int requiredEnergyForDevision = 100;
 	int energyPerPhotos = 1;
 	int decreaseEnergy = 1;
@@ -24,7 +22,6 @@ private:
 	sf::Image mapImage;
 	sf::Texture mapTexture;
 	sf::Sprite mapSprite;
-	sf::Color colors[6] = { sf::Color::Red, sf::Color::Green, sf::Color::Blue, sf::Color::Magenta, sf::Color::Cyan , sf::Color::Yellow };
 	Random random;
 public:
 	Map()
@@ -34,7 +31,8 @@ public:
 			{
 				if ((i == 0 || i == MAP_HEIGHT - 1) || (j == 0 || j == MAP_WIDTH - 1))
 				{
-					Wall wall(j, i);
+					Entity wall(j, i);
+					wall.setName("wall");
 					map.push_back(wall);
 				}
 				else
@@ -120,7 +118,7 @@ public:
 						cells.back()->getGen(iteration).mutate();
 						if (!((*i)->getGen(iteration) == cells.back()->getGen(iteration)))
 						{
-							cells.back()->setColor(colors[random.generate(0, 5)]);
+							cells.back()->setColor(random.generataRandomColor());
 							map.at(posY * MAP_WIDTH + posX).setColor(cells.back()->getColor());
 						}
 						else
@@ -292,11 +290,10 @@ public:
 					localFood = 0;
 				}
 				localFood += foodCounter;
-				update(localIteration);
+				localIteration++;
 				if (localIteration >= maxIteration)
 					localIteration = 0;
-				else
-					localIteration++;
+				update(localIteration);
 				localTime = 0;
 			}
 		}
@@ -345,7 +342,17 @@ public:
 				map.at(posY * MAP_WIDTH + posX).setRotation(cells.back()->getFacing());
 			}
 	}
+	void clearMap()
+	{
 
+		for (int i = 0; i < MAP_HEIGHT; i++)
+			for (int j = 0; j < MAP_WIDTH; j++)
+				if ((i == 0 || i == MAP_HEIGHT - 1) || (j == 0 || j == MAP_WIDTH - 1))
+					map.at(i * MAP_WIDTH + j).setName("wall");
+				else
+					map.at(i * MAP_WIDTH + j).setName("undefined");
+		cells.clear();
+	}
 	int getX()
 	{
 		return x;
@@ -354,12 +361,10 @@ public:
 	{
 		return y;
 	}
-
 	std::string getNumberOfCells()
 	{
 		return std::to_string(cells.size());
 	}
-
 	std::string getCellInfo(int posX, int posY)
 	{
 		std::string info = "";
@@ -394,10 +399,13 @@ public:
 			}
 		return(info);
 	}
-
 	void setMaxIteration(int myMaxIteration)
 	{
 		maxIteration = myMaxIteration;
+	}
+	int getMaxIteration()
+	{
+		return maxIteration;
 	}
 	void setRequiredEnergyForDevision(int myRequiredEnergyForDevision)
 	{

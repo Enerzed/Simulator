@@ -4,10 +4,10 @@ class Cell :
     public Entity
 {
 private:
+	int energy;
 	int facing;
 	int seeX, seeY;
 	Gen gen[5];
-	Random random;
 public:
 	Cell()
 	{
@@ -180,6 +180,16 @@ public:
 		}
 		}
 		updateSee();
+	}
+
+	int getEnergy()
+	{
+		return energy;
+	}
+
+	void setEnergy(int myEnergy)
+	{
+		energy = myEnergy;
 	}
 
 	int getSeeX()

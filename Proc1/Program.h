@@ -2,28 +2,31 @@
 #include <random>
 #include "Controls.h"
 #include "Map.h"
-#include <sstream>
-
 
 class Program
 {
 private:
+	static Program* p_instance;
 	sf::Clock clock;
-	sf::Time mainStart;
 	sf::Font font;
-	Map map;
-	Controls controls;
-	int speed = 1;
+	int speed;
 	int x;
 	int y;
-	bool clickedCell = false;
-	Cell displayCell;
-public:
+	bool clickedCell;
+	Controls controls;
+	Map map;
 	Program()
 	{
-
+		clickedCell = false;
+		speed = 1;
 	}
-
+public:
+	static Program* getInstance()
+	{
+		if (!p_instance)
+			p_instance = new Program();
+		return p_instance;
+	}
 	void run()
 	{
 		font.loadFromFile("Consolas.ttf");
@@ -60,9 +63,20 @@ public:
 					x = event.mouseMove.x;
 					y = event.mouseMove.y;
 				}
+				if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+				{
+					window.close();
+				}
 			}
+
 			controls.process(window, clock);
-			map.setMaxIteration(controls.getGenSlider());
+			if (controls.getClearMap() == true)
+			{
+				map.clearMap();
+				controls.setClearMap(false);
+			}
+			if (controls.getGenSlider() != map.getMaxIteration())
+				map.setMaxIteration(controls.getGenSlider());
 			map.setRequiredEnergyForDevision(controls.getRequiredEnergyForDevision());
 			map.setEnergyPerPhotos(controls.getPhotosSlider());
 			map.setDecreaseEnergy(controls.getDecreaseEnergy());

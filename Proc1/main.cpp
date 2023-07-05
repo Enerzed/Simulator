@@ -1,7 +1,7 @@
 #include "Program.h"
 
+
 int main()
 {
-	Program simulator;
-	simulator.run();
+	Program::getInstance()->run();
 }

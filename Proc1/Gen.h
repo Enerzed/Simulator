@@ -54,8 +54,7 @@ public:
 			int reaction;
 			for (int i = 0; i < random.generate(1, 6); i++)
 			{
-				int gen = random.generate(0, 5);
-				switch (gen)
+				switch (random.generate(0, 5))
 				{
 				case 0: {
 					do reaction = random.generate(0, 5);

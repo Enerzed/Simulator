@@ -14,7 +14,6 @@ protected:
 	std::string name;
     int posX;
     int posY;
-    int energy;
     int rotation;
 public:
     Entity()
@@ -73,16 +72,6 @@ public:
     void setColor(sf::Color myColor)
     {
         color = myColor;
-    }
-
-    int getEnergy()
-    {
-        return energy;
-    }
-
-    void setEnergy(int myEnergy)
-    {
-        energy = myEnergy;
     }
 
     int getRotation()
